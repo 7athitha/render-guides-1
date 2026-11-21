@@ -224,7 +224,7 @@ above, and then executes two composite steps:
 -   :file:`.github/actions/render-guides-step/action.yml` is the actual
     rendering step, also using the same `latest` Docker container image.
 
-Note that we only have one central Docker container image entrypoint that can
+Note that we only have one central Docker container image entry point that can
 take arguments like `migrate` or `render` to trigger different actions.
 
 ..  _deploy-azure-assets:
