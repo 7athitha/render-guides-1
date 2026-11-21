@@ -41,29 +41,36 @@ For macOS you may need to specify the argument ``user``:
 Using PHP
 =========
 
-A phar_ binary is shipped with this repository. In short, a phar file is an
+The project can also be built into a phar_ file. In short, a phar file is an
 executable PHP file. You can run it like any other executable.
 
-To build the phar file we use Box_, with some wrapper script. To build the phar
-file yourself, you can run the following command.
+No phar file is committed to this repository. To build one yourself, we use
+Box_ with a wrapper script (:file:`tools/build-phar.sh`) and the settings in
+:file:`box.json`. Run the following command in the root of this repository:
 
 ..  code-block:: shell
 
     make build-phar
 
-This will create a file called :file:`guides.phar` in the build directory. You
-can execute the phar file like a PHP file using:
+On the first run, the script downloads Box into the :file:`tools` directory,
+so an internet connection and ``curl`` are needed. The build script is a Bash
+script. On Windows, run it from WSL or Git Bash.
+
+The build creates a file called :file:`render-guides.phar` in the
+:file:`.Build` directory. You can execute the phar file like a PHP file using:
 
 ..  code-block:: shell
 
-    php build/guides.phar
+    php .Build/render-guides.phar
 
 ..  warning::
 
     Currently, Box is not able to build a phar file for projects containing
-    Composer plugins as it will only install production dependencies. This
-    means that the :file:`composer.json` is modified during the build process.
-    You shall not commit this change to the repository.
+    Composer plugins as it will only install production dependencies. To work
+    around this, the build script removes the development dependencies
+    ``ergebnis/composer-normalize`` and ``phpstan/extension-installer`` with
+    ``composer remove``. This modifies :file:`composer.json`. You shall not
+    commit this change to the repository.
 
 ..  _building-github-workflow:
 
@@ -88,14 +95,21 @@ The Git `main` branch is protected, so only feature/bugfix/task-branches and for
 repositories can be merged into it. When a pull request (PR) is created, at least
 one team member needs to approve it, so that it can be merged.
 
-When a PR is created (and for every follow-up commit) the following GitHub Action
-are executed:
+When a PR is created (and for every follow-up commit) the following GitHub
+Workflows are executed:
 
 -   :file:`.github/workflows/main.yaml` runs code quality and integration checks
--   :file:`.github/workflows/docker-self.yaml` creates a test Docker container image
+-   :file:`.github/workflows/docker-test.yaml` creates a test Docker container image
     (not uploaded anywhere), only if the PR modifies the main :file:`Dockerfile`.
 
-Once a PR is merged, nothing else happens.
+When a PR is merged into `main`, more workflows run:
+
+-   :file:`.github/workflows/main.yaml` runs again on the new commit.
+-   :file:`.github/workflows/split-repositories.yaml` runs when files below
+    :file:`packages/` have changed. It publishes each package to its own
+    read-only repository.
+-   :file:`.github/workflows/check-built-assets.yaml` checks the built theme
+    assets.
 
 ..  _building-github-workflow-release-strategy:
 
@@ -146,7 +160,7 @@ When a Git version tag matching `*.*.*` is pushed, these workflows are executed:
 GitHub workflow: GitHub Actions - main entry
 ============================================
 
-:file:`/action.yaml` is the main entry point for a composite action. It can
+:file:`/action.yml` is the main entry point for a composite action. It can
 be used by other repositories in workflows.
 
 The GitHub repository github_gh_render_action_ provides an easy interface to
@@ -170,7 +184,7 @@ The central piece of that action is:
         configure-project-release: ${{ env.target_branch_directory }}
         configure-project-version: ${{ env.target_branch_directory }}
 
-This "remotely executes" the :file:`/action.yaml` of this repository with specific
+This "remotely executes" the :file:`/action.yml` of this repository with specific
 input parameters gathered earlier in the `gh-render-action` action.
 
 All of this allows an extension author to provide a GitHub Workflow in their own
@@ -199,18 +213,18 @@ care of breaking configurations, so that extension authors (and the TYPO3 Core
 documentation) always can rely on one action that does not change, and does
 not need different version numbers/tags.
 
-The :file:`/action.yaml` composite action takes in the input of the code snippet
+The :file:`/action.yml` composite action takes in the input of the code snippet
 above, and then executes two composite steps:
 
--   :file:`.github/actions/configure-guides-step/action.yaml` that provides
+-   :file:`.github/actions/configure-guides-step/action.yml` that provides
     extension-repository specific attributes that influence the local rendering.
     The input variables are dynamically injected into a temporary :file:`guides.xml`
     file, that is used for the actual rendering. This is done by executing
     our own `latest` Docker container image.
--   :file:`.github/actions/render-guides-step/action.yaml` is the actual
+-   :file:`.github/actions/render-guides-step/action.yml` is the actual
     rendering step, also using the same `latest` Docker container image.
 
-Note that we only have one central Docker container image entry point that can
+Note that we only have one central Docker container image entrypoint that can
 take arguments like `migrate` or `render` to trigger different actions.
 
 ..  _deploy-azure-assets:
@@ -268,7 +282,8 @@ GitHub workflow: docker
 =======================
 
 :file:`.github/workflows/docker.yaml` is triggered when a Git tag
-matching `*.*.*` is committed to the repository.
+matching `*.*.*` is committed to the repository, and also when a GitHub
+release is published.
 
 It does these steps:
 
@@ -337,6 +352,10 @@ It performs basic code quality analysis and execution of unit/integration tests:
 
     -   `Run integration tests`
 
+    -   `theme-js-tests` runs the JavaScript tests of the theme
+
+    -   `api-tests` checks the generated api.typo3.org output
+
 -   Quality:
 
     -   `CGL`
@@ -344,6 +363,11 @@ It performs basic code quality analysis and execution of unit/integration tests:
     -   `PHPSTAN`
 
     -   `Lint guides.xml configurations`
+
+    -   Normalization check for :file:`composer.json`
+
+-   Rendering checks: two steps that render the project's own documentation
+    and fail if the rendering produces warnings
 
 -   Validate monorepo structure
 
