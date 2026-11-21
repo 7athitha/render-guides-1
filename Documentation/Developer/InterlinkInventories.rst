@@ -56,6 +56,16 @@ These inventories can be used by default in any rendered documentation:
 
     URL: https://docs.typo3.org/c/typo3/cms-core/main/en-us/
 
+*   Title: :doc:`t3ts45:Index`
+
+    Inventory key: :doc:`t3ts45 <t3ts45:Index>`
+
+    URL: https://docs.typo3.org/m/typo3/reference-typoscript/main/en-us/
+
+    For TYPO3 main, 13.4 and 12.4 this inventory redirects to the TypoScript
+    reference. For other versions it points to the tutorial "TypoScript in 45
+    minutes".
+
 *   Title: :doc:`t3coreapi:Index`
 
     Inventory key: :doc:`t3coreapi <t3coreapi:Index>`
@@ -67,6 +77,15 @@ These inventories can be used by default in any rendered documentation:
     Inventory key: :doc:`t3tca <t3tca:Index>`
 
     URL: https://docs.typo3.org/m/typo3/reference-tca/main/en-us/
+
+*   Title: :doc:`t3tsconfig:Index`
+
+    Inventory key: :doc:`t3tsconfig <t3tsconfig:Index>`
+
+    URL: https://docs.typo3.org/m/typo3/reference-typoscript/main/en-us/
+
+    For TYPO3 main, 13.4 and 12.4 this inventory redirects to the TypoScript
+    reference. For other versions it points to the TSconfig reference.
 
 *   Title: :doc:`t3tsref:Index`
 
@@ -134,6 +153,18 @@ These inventories can be used by default in any rendered documentation:
 
     URL: https://docs.typo3.org/m/typo3/team-t3oteam/main/en-us/
 
+*   Title: :doc:`policy:Index`
+
+    Inventory key: :doc:`policy <policy:Index>`
+
+    URL: https://docs.typo3.org/m/typo3/guide-policy/main/en-us/
+
+*   Title: :doc:`guide-policy:Index`
+
+    Inventory key: :doc:`guide-policy <guide-policy:Index>`
+
+    URL: https://docs.typo3.org/m/typo3/guide-policy/main/en-us/
+
 *   Title: :doc:`fluid:Index`
 
     Inventory key: :doc:`fluid <fluid:Index>`
@@ -150,8 +181,13 @@ These inventories can be used by default in any rendered documentation:
 
     Inventory key: :doc:`t3exceptions <t3exceptions:Index>`
 
-    URL: https://docs.typo3.org/typo3cms/exceptions/main/en-us/
+    URL: https://docs.typo3.org/m/typo3/reference-exceptions/main/en-us/
 
+*   Title: API reference (api.typo3.org)
+
+    Inventory key: ``api``
+
+    URL: https://api.typo3.org/main/
 
 ..  _typo3-version:
 
@@ -224,11 +260,11 @@ Adding a new TYPO3 version or manual
 ------------------------------------
 
 In the event of a change in long-term support, adjustments to the corresponding
-TYPO3 versions can be made directly in the theme within the enum
-:php:`\T3Docs\Typo3DocsTheme\Inventory\Typo3VersionMapping`.
+TYPO3 versions can be made directly in the :file:`typo3-version-handling`
+package, within the enum :php:`\T3Docs\VersionHandling\Typo3VersionMapping`.
 
 The default manuals to be supported can be managed in enum
-:php:`\T3Docs\Typo3DocsTheme\Inventory\DefaultInventories`.
+:php:`\T3Docs\VersionHandling\DefaultInventories`.
 
 
 ..  _interlink-inventories-system-extensions:
