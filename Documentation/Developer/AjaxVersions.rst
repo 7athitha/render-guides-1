@@ -93,7 +93,7 @@ The following data-attributes on the HTML element :html:`<div id="toc-version">`
     is used as the simulated page from which the version switching information is retrieved for.
     For example, `https://docs.typo3.org/m/typo3/tutorial-getting-started/12.4/en-us/Concepts/Index.html`.
 
-*   `data-override-url-proxy` - Points to the full URI of the :ref:`ajax-versions-proxy` PHP proxy.
+*   `data-override-url-proxy` - Points to the full URL of the :ref:`ajax-versions-proxy` PHP proxy.
     This is called due to CORS reasons. The default of this attribute is set to
     `https://render-guides.ddev.site/versions-proxy.php?url=`. Unless this file is manually
     copied to this URL, the proxy will return a 404 failure and inform about the non-working
