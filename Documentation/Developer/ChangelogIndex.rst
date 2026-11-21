@@ -8,11 +8,11 @@ Changelog index as JSON
 =======================
 
 Every manual is rendered with a :ref:`table of contents as JSON
-<table-of-contents-json>`. The TYPO3 Core Changelog gets one artifact on top that
+<table-of-contents-json>`. The TYPO3 Core Changelog provides an additional artifact that
 no other manual does: a machine-readable index of its entries, one file per
 major release, written beside the overview page it belongs to.
 
-:file:`Changelog-13.json` sits next to :file:`Changelog-13.html` and
+:file:`Changelog-13.json` is stored alongside :file:`Changelog-13.html` and
 :file:`Changelog-13.md` and lists the same entries the overview page lists:
 
 ..  code-block:: json
